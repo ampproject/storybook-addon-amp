@@ -1,0 +1,53 @@
+{
+  "name": "storybook-addon-amp",
+  "version": "1.0.0",
+  "description": "Storybook addon for building and testing AMP components",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
+  "repository": "git@github.com:wassgha/storybook-addon-amp.git",
+  "homepage": "https://github.com/wassgha/storybook-addon-amp",
+  "author": "Wassim Gharbi <gharbiw@google.com>",
+  "files": [
+    "esm",
+    "cjs",
+    "register.js"
+  ],
+  "devDependencies": {
+    "@storybook/addons": "^5.0.3",
+    "@storybook/components": "^5.0.3",
+    "@storybook/core-events": "^5.0.3",
+    "@storybook/theming": "^5.0.3",
+    "@types/pdfjs-dist": "^2.0.0",
+    "@types/react": "^16.8.8",
+    "@types/webpack-env": "^1.13.9",
+    "react": "^16.8.4",
+    "typescript": "^3.7.0"
+  },
+  "peerDependencies": {
+    "@storybook/addons": "^5.0.0",
+    "@storybook/components": "^5.0.0",
+    "@storybook/theming": "^5.0.0",
+    "react": ">=16.8.0"
+  },
+  "scripts": {
+    "dev": "tsc --watch --preserveWatchOutput",
+    "build": "yarn build:esm && yarn build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir cjs",
+    "test": "echo 'No tests' && exit 0",
+    "clean": "rm -r esm cjs",
+    "prepublishOnly": "yarn build"
+  },
+  "dependencies": {
+    "@types/styled-jsx": "^2.2.8",
+    "preact": "^10.4.1",
+    "preact-render-to-string": "^5.1.7",
+    "react-dom": "^16.13.1",
+    "react-pdf": "^4.0.5",
+    "styled-jsx": "^3.2.5"
+  },
+  "publishConfig": {
+    "tag": "latest"
+  }
+}
