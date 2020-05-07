@@ -1,0 +1,1 @@
+import './esm/register/index'
