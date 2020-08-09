@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Fragment, SFC, useEffect, useState } from "react";
+import { Fragment, SFC, useEffect, useState, useCallback } from "react";
 import { jsx, styled } from "@storybook/theming";
 import addons from "@storybook/addons";
 import { STORY_CHANGED } from "@storybook/core-events";
@@ -35,22 +35,26 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
     mode: "no-modules",
     binary: "cdn",
   });
-  const [storyId, changeStory] = useState<string>();
+
+  const updateConfig = useCallback(
+    (newConfig) => {
+      setConfig(newConfig);
+      api.emit(Events.UpdateConfig, newConfig);
+    },
+    [setConfig]
+  );
 
   useEffect(() => {
-    const onStoryChanged = (id: string) => {
-      changeStory(id);
-
-      const cfg = api.getParameters(id, ParameterName);
-
-      setConfig((prev) => (cfg !== prev ? cfg : prev));
+    const onStoryChanged = () => {
+      setConfig({
+        mode: "no-modules",
+        binary: "cdn",
+      });
     };
 
-    channel.on(Events.UpdateConfig, setConfig);
     channel.on(STORY_CHANGED, onStoryChanged);
 
     return () => {
-      channel.removeListener(Events.UpdateConfig, setConfig);
       channel.removeListener(STORY_CHANGED, onStoryChanged);
     };
   }, []);
@@ -76,10 +80,10 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
         <Form>
           <Form.Field key={"mode"} label={"AMP Mode"}>
             <Form.Select
-              value={config.mode}
+              value={config?.mode}
               name={"mode"}
               onChange={(e) => {
-                setConfig({ ...config, mode: e.target.value });
+                updateConfig({ ...config, mode: e.target.value });
               }}
               size="flex"
             >
@@ -96,10 +100,10 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
           </Form.Field>
           <Form.Field key={"binary"} label={"AMP Binary"}>
             <Form.Select
-              value={config.binary}
+              value={config?.binary}
               name={"binary"}
               onChange={(e) => {
-                setConfig({ ...config, binary: e.target.value });
+                updateConfig({ ...config, binary: e.target.value });
               }}
               size="flex"
             >
