@@ -54,7 +54,6 @@ export function useBentoMode(ref, config, ampHtml, getStory, context) {
       }
     });
     readyPromise.then(() => {
-      console.log('set content');
       const iframeDoc = iframe!.contentDocument!;
       render(getStory(context), iframeDoc.body);
     });
