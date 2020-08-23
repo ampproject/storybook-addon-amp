@@ -2,10 +2,28 @@
 import { h } from "preact";
 import { useEffect } from "@storybook/client-api";
 import { render } from "preact";
+import type { RefObject } from "react";
+import type { Config } from "./config";
+import type { StoryContext, StoryGetter } from "@storybook/addons";
 
-export function useBentoMode(ref, config, ampHtml, getStory, context) {
+export function useBentoMode(
+  ref: RefObject<HTMLDivElement>,
+  config: Config,
+  ampHtml: string,
+  getStory: StoryGetter,
+  context: StoryContext
+) {
   useEffect(() => {
-    const placeholder = ref.current;
+    if (config.mode !== 'bento') {
+      return;
+    }
+
+    // Preact mode, unfortunately, completely rerenders the content
+    // (e.g. iframe), which forces the reload making it impossible to test
+    // Bento mode. Thus, this code only renders the placeholder element and
+    // the iframe is created and reused in the `useBentoMode`.
+    // See https://github.com/storybookjs/storybook/issues/12177
+    const placeholder = ref?.current;
     const parent = placeholder?.parentElement;
     if (!placeholder || !parent) {
       return;

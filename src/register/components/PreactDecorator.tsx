@@ -86,6 +86,11 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
   const ref = useRef<HTMLDivElement|null>(null);
   useBentoMode(ref, config, ampHtml, getStory, context);
   if (config.mode === "bento") {
+    // Preact mode, unfortunately, completely rerenders the content
+    // (e.g. iframe), which forces the reload making it impossible to test
+    // Bento mode. Thus, this code only renders the placeholder element and
+    // the iframe is created and reused in the `useBentoMode`.
+    // See https://github.com/storybookjs/storybook/issues/12177
     return <div ref={ref}/>;
   }
 
