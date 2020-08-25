@@ -4,4 +4,4 @@ The storybook AMP addon allows rendering of AMP content inside the Storybook env
 
 ## Parameters
 
-`storybook-addon-amp` allows switching between three AMP modes: Module (`v0.js`), No-module (`v0.mjs`) and Bento (no `v0` binary included). It also allows switching between development mode (locally hosted `v0.js`) and production mode (CDN hosted `v0.js`).
+`storybook-addon-amp` allows switching between three AMP modes: Module (`v0.js`), No-module (`v0.mjs`) and Bento. It also allows switching between development mode (locally hosted `v0.js`) and production mode (CDN hosted `v0.js`).

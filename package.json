@@ -1,5 +1,5 @@
 {
-  "name": "storybook-addon-amp",
+  "name": "@ampproject/storybook-addon",
   "version": "1.0.1",
   "description": "Storybook addon for building and testing AMP components",
   "main": "cjs/index.js",
@@ -14,13 +14,22 @@
     "register.js"
   ],
   "devDependencies": {
-    "@storybook/addons": "^5.0.3",
-    "@storybook/components": "^5.0.3",
-    "@storybook/core-events": "^5.0.3",
-    "@storybook/theming": "^5.0.3",
+    "@babel/core": "7.9.0",
+    "@babel/preset-react": "7.9.4",
+    "@babel/runtime-corejs3": "7.9.2",
+    "@storybook/addon-actions": "^5.3.19",
+    "@storybook/addon-knobs": "^5.3.19",
+    "@storybook/addon-links": "^5.3.19",
+    "@storybook/addons": "^5.3.19",
+    "@storybook/components": "^5.3.19",
+    "@storybook/core-events": "^5.3.19",
+    "@storybook/preact": "^5.3.19",
+    "@storybook/theming": "^5.3.19",
     "@types/pdfjs-dist": "^2.0.0",
     "@types/react": "^16.8.8",
     "@types/webpack-env": "^1.13.9",
+    "babel-loader": "8.0.6",
+    "core-js": "3.6.4",
     "react": "^16.8.4",
     "typescript": "^3.7.0"
   },
@@ -37,7 +46,9 @@
     "build:cjs": "tsc --module commonjs --outDir cjs",
     "test": "echo 'No tests' && exit 0",
     "clean": "rm -r esm cjs",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "storybook": "start-storybook -p 9009 -s public -c test/.storybook",
+    "build-storybook": "build-storybook -s public -c test/.storybook"
   },
   "dependencies": {
     "@storybook/client-api": "^5.3.19",
