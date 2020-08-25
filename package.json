@@ -1,13 +1,17 @@
 {
   "name": "@ampproject/storybook-addon",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Storybook addon for building and testing AMP components",
   "main": "cjs/index.js",
   "module": "esm/index.js",
   "types": "esm/index.d.ts",
-  "repository": "git@github.com:wassgha/storybook-addon-amp.git",
-  "homepage": "https://github.com/wassgha/storybook-addon-amp",
-  "author": "Wassim Gharbi <gharbiw@google.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ampproject/storybook-addon-amp.git"
+  },
+  "homepage": "https://github.com/ampproject/storybook-addon-amp",
+  "author": "The AMP HTML Authors",
+  "license": "Apache-2.0",
   "files": [
     "esm",
     "cjs",
