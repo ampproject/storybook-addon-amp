@@ -84,7 +84,7 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
           </g>
         </svg>
         <Form>
-          <Form.Field key={"source"} label={"AMP Source"}>
+          <Form.Field key={"source"} label={"Source"}>
             <Form.Select
               value={config?.source}
               name={"source"}
@@ -94,14 +94,14 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
               size="flex"
             >
               <option key={"cdn"} value={"cdn"}>
-                {"CDN (cdn.ampproject.org)"}
+                {"cdn.ampproject.org"}
               </option>
               <option key={"local"} value={"local"}>
-                {"Local (localhost)"}
+                {"localhost"}
               </option>
             </Form.Select>
           </Form.Field>
-          <Form.Field key={"binary"} label={"AMP Binary"}>
+          <Form.Field key={"binary"} label={"Binary"}>
             <Form.Select
               value={config?.binary}
               name={"binary"}
@@ -111,14 +111,14 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
               size="flex"
             >
               <option key={"no-modules"} value={"no-modules"}>
-                {"AMP no-modules (v0.js)"}
+                {"v0.js (nomodule)"}
               </option>
               <option key={"modules"} value={"modules"}>
-                {"AMP modules (v0.mjs)"}
+                {"v0.mjs (type=\"module\")"}
               </option>
             </Form.Select>
           </Form.Field>
-          <Form.Field key={"mode"} label={"AMP Mode"}>
+          <Form.Field key={"mode"} label={"Mode"}>
             <Form.Select
               value={config?.mode}
               name={"mode"}
@@ -128,7 +128,7 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
               size="flex"
             >
               <option key={"ampdoc"} value={"ampdoc"}>
-                {"AMP Document"}
+                {"AMP"}
               </option>
               <option key={"bento"} value={"bento"}>
                 {"Bento"}
