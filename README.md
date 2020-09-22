@@ -34,20 +34,23 @@ import { h } from 'preact';
 import {storiesOf} from '@storybook/preact';
 import {withAmp} from '@ampproject/storybook-addon';
 
-storiesOf('amp-carousel', module)
-  .addDecorator(withAmp)
-  .addParameters({
-    extensions: [{name: 'amp-carousel', version: '0.2'}],
-  })
-  .add('default', () => {
-    return (
-      <amp-base-carousel width="440" height="225">
-        {['lightcoral', 'peachpuff', 'lavender'].map((color) => (
-          <div key={color}>{color}</div>
-        ))}
-      </amp-base-carousel>
-    );
-  });
+export default {
+  title: 'amp-carousel',
+  decorators: [withAmp],
+  parameters: {
+    extensions: [{name: 'amp-carousel', version: '0.2'}]},
+  },
+};
+
+export const Default = () => {
+  return (
+    <amp-base-carousel width="440" height="225">
+      {['lightcoral', 'peachpuff', 'lavender'].map((color) => (
+        <div key={color}>{color}</div>
+      ))}
+    </amp-base-carousel>
+  );
+};
 ```
 
 The following parameters can be specified:
