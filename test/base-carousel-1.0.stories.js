@@ -36,4 +36,13 @@ storiesOf('amp-base-carousel-1.0', module)
         ))}
       </amp-base-carousel>
     );
+  })
+  .add('other', () => {
+    return (
+      <amp-base-carousel width="440" height="225">
+        {['peachpuff', 'lavender'].map((color) => (
+          <div key={color}>{color}</div>
+        ))}
+      </amp-base-carousel>
+    );
   });

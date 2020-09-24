@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import {AddonName} from "../../addon";
+
 export interface Config {
   mode: string;
   binary: string;
@@ -25,3 +27,48 @@ export const defaultConfig: Config = {
   binary: "no-modules", // "no-modules", "modules"
   source: "cdn", // "cdn", "local"
 };
+
+const STORAGE_NAME = `${AddonName}.config`;
+
+export function sameConfig(c1: Config, c2: Config): boolean {
+  return (
+    c1.mode === c2.mode &&
+    c1.binary === c2.binary &&
+    c1.source === c2.source
+  );
+}
+
+export function getPersistedConfig(): Config {
+  try {
+    const stored = localStorage.getItem(STORAGE_NAME);
+    if (!stored) {
+      return defaultConfig;
+    }
+    const parsed = JSON.parse(stored);
+    return {
+      ...defaultConfig,
+      mode: parsed["mode"],
+      binary: parsed["binary"],
+      source: parsed["source"],
+    };
+  } catch (e) {
+    rethrowAsync(e);
+  }
+  return defaultConfig;
+}
+
+export function persistConfig(config: Config) {
+  try {
+    localStorage.setItem(STORAGE_NAME, JSON.stringify({
+      "mode": config.mode,
+      "binary": config.binary,
+      "source": config.source,
+    }));
+  } catch (e) {
+    rethrowAsync(e);
+  }
+}
+
+function rethrowAsync(e: Error) {
+  setTimeout(() => {throw e;});
+}

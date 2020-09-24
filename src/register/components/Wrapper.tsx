@@ -15,7 +15,7 @@
  */
 
 /** @jsx jsx */
-import { Fragment, SFC, useEffect, useState, useCallback } from "react";
+import { Fragment, SFC, useEffect, useState, useCallback, useRef } from "react";
 import { jsx, styled } from "@storybook/theming";
 import addons from "@storybook/addons";
 import { STORY_CHANGED } from "@storybook/core-events";
@@ -23,7 +23,7 @@ import { STORY_CHANGED } from "@storybook/core-events";
 import { ScrollArea, Form } from "@storybook/components";
 
 import { Events, ParameterName } from "../../addon";
-import {Config, defaultConfig} from "./config";
+import {Config, getPersistedConfig, persistConfig} from "./config";
 
 const PanelWrapper = styled(({ children, className }) => (
   <ScrollArea horizontal vertical className={className}>
@@ -43,11 +43,14 @@ interface Props {
 }
 
 export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
-  const [config, setConfig] = useState<Config>(defaultConfig);
+  const [config, setConfig] = useState<Config>(getPersistedConfig);
+  const configRef = useRef(config);
+  configRef.current = config;
 
   const updateConfig = useCallback(
     (newConfig) => {
       setConfig(newConfig);
+      persistConfig(newConfig);
       api.emit(Events.UpdateConfig, newConfig);
     },
     [setConfig]
@@ -55,13 +58,15 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
 
   useEffect(() => {
     const onStoryChanged = () => {
-      setConfig(defaultConfig);
+      api.emit(Events.UpdateConfig, configRef.current);
     };
 
     channel.on(STORY_CHANGED, onStoryChanged);
-
+    channel.on(Events.AskConfig, onStoryChanged);
+    
     return () => {
       channel.removeListener(STORY_CHANGED, onStoryChanged);
+      channel.removeListener(Events.AskConfig, onStoryChanged);
     };
   }, []);
 
