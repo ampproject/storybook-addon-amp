@@ -22,7 +22,7 @@ import { useEffect, useRef, useState } from "@storybook/client-api";
 import addons, { StoryWrapper } from "@storybook/addons";
 
 import { Events } from "../../addon";
-import { Config, defaultConfig } from "./config";
+import { Config, defaultConfig, sameConfig } from "./config";
 import { useBentoMode } from "./bento";
 
 const EXT_TYPES = {
@@ -31,12 +31,21 @@ const EXT_TYPES = {
 
 export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
   const [config, setConfig] = useState<Config>(defaultConfig);
+  const configRef = useRef<Config>(config);
+  configRef.current = config;
 
   useEffect(() => {
     const channel = addons.getChannel();
-    channel.on(Events.UpdateConfig, setConfig);
+    channel.emit(Events.AskConfig);
+
+    const onUpdatedConfig = (config) => {
+      if (!sameConfig(config, configRef.current)) {
+        setConfig(config);
+      }
+    };
+    channel.on(Events.UpdateConfig, onUpdatedConfig);
     return () => {
-      channel.removeListener(Events.UpdateConfig, setConfig);
+      channel.removeListener(Events.UpdateConfig, onUpdatedConfig);
     };
   }, []);
 
