@@ -74,6 +74,7 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
             <meta charSet="utf-8" />
             <title>AMP Page Example</title>
             <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
+            ${getBase(config)}
             ${
               context?.parameters?.experiments?.length > 0 ?
               `<script>
@@ -145,6 +146,18 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
 
 function getExtType(name: string) {
   return EXT_TYPES[name] || 'element';
+}
+
+function getBase(config: Config): string {
+  const isLocal = config.source === "local";
+  const baseUrl =
+    isLocal
+      ? "http://localhost:8000/"
+      : "";
+  if (!baseUrl) {
+    return '';
+  }
+  return `<base href="${baseUrl}">`;
 }
 
 function getAmpUrl(module: string, version: string|null, type: string, config: Config): string {
