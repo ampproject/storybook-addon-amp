@@ -46,7 +46,6 @@ interface Props {
 
 const HorizontalFormFields = styled.div({
   display: "flex",
-  alignItems: "flex-start",
   flexWrap: "wrap",
   "&& > *": {
     flex: 1,
