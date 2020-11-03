@@ -15,6 +15,7 @@
  */
 
 /** @jsx h */
+import { DEFAULT_LOCAL_BASE_URL } from './parameters'
 import { h } from "preact";
 import flush from "styled-jsx/server";
 import { renderToString as preactRenderToString } from "preact-render-to-string";
@@ -74,7 +75,7 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
             <meta charSet="utf-8" />
             <title>AMP Page Example</title>
             <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
-            ${getBase(config)}
+            ${getBase(config, context?.parameters)}
             ${
               context?.parameters?.experiments?.length > 0 ?
               `<script>
@@ -89,22 +90,22 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
             }
             ${
               config.binary === "modules" ?
-              `<link rel="stylesheet" href="${getAmpUrl("amp", null, "css", config)}">` :
+              `<link rel="stylesheet" href="${getAmpUrl("amp", null, "css", config, context?.parameters)}">` :
               ""
             }
-            <script async src="${getAmpUrl("amp", null, "js", config)}"></script>
+            <script async src="${getAmpUrl("amp", null, "js", config, context?.parameters)}"></script>
             <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
             ${(context?.parameters?.extensions || []).map(
               (ext) =>
                 `
                 ${
                   config.binary === "modules" ?
-                  `<link rel="stylesheet" href="${getAmpUrl(ext.name, ext.version, "css", config)}">` :
+                  `<link rel="stylesheet" href="${getAmpUrl(ext.name, ext.version, "css", config, context?.parameters)}">` :
                   ""
                 }
                 <script async custom-${getExtType(ext.name)}="${
                   ext.name
-                }" src="${getAmpUrl(ext.name, ext.version, "js", config)}"></script>
+                }" src="${getAmpUrl(ext.name, ext.version, "js", config, context?.parameters)}"></script>
                 `
             ).join('')}
             ${styles}
@@ -148,36 +149,44 @@ function getExtType(name: string) {
   return EXT_TYPES[name] || 'element';
 }
 
-function getBase(config: Config): string {
+function getBase(config: Config, parameters): string {
+  const localBaseUrl = parameters?.localBaseUrl || DEFAULT_LOCAL_BASE_URL;
   const isLocal = config.source === "local";
   const baseUrl =
-    isLocal
-      ? "http://localhost:8000/"
-      : "";
+    isLocal && localBaseUrl.startsWith("http://localhost") ? localBaseUrl : "";
   if (!baseUrl) {
-    return '';
+    return "";
   }
-  return `<base href="${baseUrl}">`;
+  return `<base href="${new URL(baseUrl).origin}">`;
 }
 
-function getAmpUrl(module: string, version: string|null, type: string, config: Config): string {
+function getAmpUrl(
+  module: string,
+  version: string | null,
+  type: string,
+  config: Config,
+  parameters
+): string {
+  const localBaseUrl = parameters?.localBaseUrl || DEFAULT_LOCAL_BASE_URL;
+  const localAlternateNames = parameters?.localAlternateNames !== false;
+
   const isLocal = config.source === "local";
-  const baseUrl =
-    isLocal
-      ? "http://localhost:8000/dist"
-      : "https://cdn.ampproject.org";
+  let baseUrl = isLocal ? localBaseUrl : "https://cdn.ampproject.org";
+  if (!isLocal && config.rtv) {
+    baseUrl += `/rtv/${config.rtv}`;
+  }
   const ext =
-    type === "css" ?
-    "css" :
-    config.binary === "no-modules" ? "js" : "mjs";
+    type === "css" ? "css" : config.binary === "no-modules" ? "js" : "mjs";
 
   // v0.js
   if (module === "amp") {
-    return `${baseUrl}/${isLocal ? 'amp' : 'v0'}.${ext}`;
+    return `${baseUrl}/${isLocal && localAlternateNames ? "amp" : "v0"}.${ext}`;
   }
 
   // Extension.
-  return `${baseUrl}/v0/${module}-${version || '0.1'}${isLocal ? '.max' : ''}.${ext}`;
+  return `${baseUrl}/v0/${module}-${version || "0.1"}${
+    isLocal && localAlternateNames ? ".max" : ""
+  }.${ext}`;
 }
 
 export default Decorator;

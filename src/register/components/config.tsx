@@ -20,12 +20,14 @@ export interface Config {
   mode: string;
   binary: string;
   source: string;
+  rtv: string;
 }
 
 export const defaultConfig: Config = {
   mode: "ampdoc", // "ampdoc", "bento"
   binary: "no-modules", // "no-modules", "modules"
   source: "cdn", // "cdn", "local"
+  rtv: '',
 };
 
 const STORAGE_NAME = `${AddonName}.config`;
@@ -34,7 +36,8 @@ export function sameConfig(c1: Config, c2: Config): boolean {
   return (
     c1.mode === c2.mode &&
     c1.binary === c2.binary &&
-    c1.source === c2.source
+    c1.source === c2.source &&
+    c1.rtv === c2.rtv
   );
 }
 
@@ -50,6 +53,7 @@ export function getPersistedConfig(): Config {
       mode: parsed["mode"],
       binary: parsed["binary"],
       source: parsed["source"],
+      rtv: parsed["rtv"],
     };
   } catch (e) {
     rethrowAsync(e);
@@ -63,6 +67,7 @@ export function persistConfig(config: Config) {
       "mode": config.mode,
       "binary": config.binary,
       "source": config.source,
+      "rtv": config.rtv,
     }));
   } catch (e) {
     rethrowAsync(e);
