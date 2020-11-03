@@ -123,7 +123,7 @@ export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
                   {"cdn.ampproject.org"}
                 </option>
                 <option key={"local"} value={"local"}>
-                  {new URL(localBaseUrl).hostname}
+                  {new URL(localBaseUrl, window.location.href).hostname}
                 </option>
               </Form.Select>
             </Form.Field>
