@@ -60,7 +60,7 @@ export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
   const [config, setConfig] = useState<Config>(getPersistedConfig);
   const configRef = useRef(config);
   configRef.current = config;
-  const localBaseUrl = useParameter('localBaseUrl', DEFAULT_LOCAL_BASE_URL)
+  const localBaseUrl = useParameter("localBaseUrl", DEFAULT_LOCAL_BASE_URL);
 
   const updateConfig = useCallback(
     (newConfig) => {
@@ -78,7 +78,7 @@ export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
 
     channel.on(STORY_CHANGED, onStoryChanged);
     channel.on(Events.AskConfig, onStoryChanged);
-    
+
     return () => {
       channel.removeListener(STORY_CHANGED, onStoryChanged);
       channel.removeListener(Events.AskConfig, onStoryChanged);
@@ -156,7 +156,7 @@ export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
                 {"v0.js (nomodule)"}
               </option>
               <option key={"modules"} value={"modules"}>
-                {"v0.mjs (type=\"module\")"}
+                {'v0.mjs (type="module")'}
               </option>
             </Form.Select>
           </Form.Field>
