@@ -72,7 +72,7 @@ export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
   const [config, setConfig] = useState<Config>(getPersistedConfig);
   const configRef = useRef(config);
   configRef.current = config;
-  const ampBaseUrlOptions = useParameter("ampBaseUrlOptions", []);
+  const ampBaseUrlOptions = useParameter<string[]>("ampBaseUrlOptions", []);
 
   const updateConfig = useCallback(
     (newConfig) => {
