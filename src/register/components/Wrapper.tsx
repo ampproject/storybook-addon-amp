@@ -15,17 +15,29 @@
  */
 
 /** @jsx jsx */
-import { DEFAULT_LOCAL_BASE_URL } from './parameters'
-import { Fragment, FunctionComponent, useEffect, useState, useCallback, useRef } from "react";
+import {
+  Fragment,
+  FunctionComponent,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import { jsx, styled } from "@storybook/theming";
 import addons from "@storybook/addons";
 import { STORY_CHANGED } from "@storybook/core-events";
+import { SourceSelect } from "./SourceSelect";
 
 import { ScrollArea, Form } from "@storybook/components";
-import { useParameter } from '@storybook/api';
+import { useParameter } from "@storybook/api";
 
 import { Events, ParameterName } from "../../addon";
-import { Config, getPersistedConfig, persistConfig } from "./config";
+import {
+  Config,
+  SOURCE_BASE_URL,
+  getPersistedConfig,
+  persistConfig,
+} from "./config";
 
 const PanelWrapper = styled(({ children, className }) => (
   <ScrollArea horizontal vertical className={className}>
@@ -60,7 +72,7 @@ export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
   const [config, setConfig] = useState<Config>(getPersistedConfig);
   const configRef = useRef(config);
   configRef.current = config;
-  const localBaseUrl = useParameter("localBaseUrl", DEFAULT_LOCAL_BASE_URL);
+  const ampBaseUrlOptions = useParameter("ampBaseUrlOptions", []);
 
   const updateConfig = useCallback(
     (newConfig) => {
@@ -106,25 +118,13 @@ export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
         <Form>
           <HorizontalFormFields>
             <Form.Field key={"source"} label={"Source"}>
-              <Form.Select
-                value={config?.source}
-                name={"source"}
+              <SourceSelect
+                ampBaseUrlOptions={ampBaseUrlOptions}
+                value={config?.baseUrl}
                 onChange={(e) => {
-                  updateConfig({
-                    ...config,
-                    source: e.target.value,
-                    binary: "no-modules",
-                  });
+                  updateConfig({ ...config, baseUrl: e.target.value });
                 }}
-                size="flex"
-              >
-                <option key={"cdn"} value={"cdn"}>
-                  {"cdn.ampproject.org"}
-                </option>
-                <option key={"local"} value={"local"}>
-                  {new URL(localBaseUrl, window.location.href).hostname}
-                </option>
-              </Form.Select>
+              />
             </Form.Field>
             <Form.Field key={"RTV"} label={"RTV"}>
               <Form.Input
@@ -133,9 +133,9 @@ export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
                 onChange={(e) => {
                   updateConfig({ ...config, rtv: e.currentTarget.value });
                 }}
-                disabled={config?.source !== "cdn"}
+                disabled={config?.baseUrl !== SOURCE_BASE_URL.cdn}
                 placeholder={
-                  config?.source === "cdn"
+                  config?.baseUrl === SOURCE_BASE_URL.cdn
                     ? "(default)"
                     : "To change local RTV, checkout a release branch."
                 }

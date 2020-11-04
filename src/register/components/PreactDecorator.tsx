@@ -23,7 +23,7 @@ import { useEffect, useRef, useState } from "@storybook/client-api";
 import addons, { StoryWrapper } from "@storybook/addons";
 
 import { Events } from "../../addon";
-import { Config, defaultConfig, sameConfig } from "./config";
+import { SOURCE_BASE_URL, Config, defaultConfig, sameConfig } from "./config";
 import { useBentoMode } from "./bento";
 
 const EXT_TYPES = {
@@ -75,7 +75,7 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
             <meta charSet="utf-8" />
             <title>AMP Page Example</title>
             <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
-            ${getBase(config, context?.parameters)}
+            ${getBase(config)}
             ${
               context?.parameters?.experiments?.length > 0 ?
               `<script>
@@ -90,22 +90,22 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
             }
             ${
               config.binary === "modules" ?
-              `<link rel="stylesheet" href="${getAmpUrl("amp", null, "css", config, context?.parameters)}">` :
+              `<link rel="stylesheet" href="${getAmpUrl("amp", null, "css", config)}">` :
               ""
             }
-            <script async src="${getAmpUrl("amp", null, "js", config, context?.parameters)}"></script>
+            <script async src="${getAmpUrl("amp", null, "js", config)}"></script>
             <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
             ${(context?.parameters?.extensions || []).map(
               (ext) =>
                 `
                 ${
                   config.binary === "modules" ?
-                  `<link rel="stylesheet" href="${getAmpUrl(ext.name, ext.version, "css", config, context?.parameters)}">` :
+                  `<link rel="stylesheet" href="${getAmpUrl(ext.name, ext.version, "css", config)}">` :
                   ""
                 }
                 <script async custom-${getExtType(ext.name)}="${
                   ext.name
-                }" src="${getAmpUrl(ext.name, ext.version, "js", config, context?.parameters)}"></script>
+                }" src="${getAmpUrl(ext.name, ext.version, "js", config)}"></script>
                 `
             ).join('')}
             ${styles}
@@ -149,15 +149,11 @@ function getExtType(name: string) {
   return EXT_TYPES[name] || 'element';
 }
 
-function getBase(config: Config, parameters): string {
-  const localBaseUrl = parameters?.localBaseUrl || DEFAULT_LOCAL_BASE_URL;
-  const isLocal = config.source === "local";
-  const baseUrl =
-    isLocal && localBaseUrl.startsWith("http://localhost") ? localBaseUrl : "";
-  if (!baseUrl) {
+function getBase(config: Config): string {
+  if (!config.baseUrl.startsWith("http://localhost")) {
     return "";
   }
-  return `<base href="${new URL(baseUrl).origin}">`;
+  return `<base href="${new URL(config.baseUrl).origin}">`;
 }
 
 function getAmpUrl(
@@ -165,27 +161,22 @@ function getAmpUrl(
   version: string | null,
   type: string,
   config: Config,
-  parameters
 ): string {
-  const localBaseUrl = parameters?.localBaseUrl || DEFAULT_LOCAL_BASE_URL;
-  const localAlternateNames = parameters?.localAlternateNames !== false;
-
-  const isLocal = config.source === "local";
-  let baseUrl = isLocal ? localBaseUrl : "https://cdn.ampproject.org";
-  if (!isLocal && config.rtv) {
-    baseUrl += `/rtv/${config.rtv}`;
+  const unminifiedFiles = config.baseUrl.startsWith('http://localhost');
+  if (config.baseUrl === SOURCE_BASE_URL.cdn && config.rtv) {
+    origin += `/rtv/${config.rtv}`;
   }
   const ext =
     type === "css" ? "css" : config.binary === "no-modules" ? "js" : "mjs";
 
   // v0.js
   if (module === "amp") {
-    return `${baseUrl}/${isLocal && localAlternateNames ? "amp" : "v0"}.${ext}`;
+    return `${config.baseUrl}/${unminifiedFiles ? "amp" : "v0"}.${ext}`;
   }
 
   // Extension.
-  return `${baseUrl}/v0/${module}-${version || "0.1"}${
-    isLocal && localAlternateNames ? ".max" : ""
+  return `${config.baseUrl}/v0/${module}-${version || "0.1"}${
+    unminifiedFiles ? ".max" : ""
   }.${ext}`;
 }
 

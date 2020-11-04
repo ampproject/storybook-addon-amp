@@ -1,15 +1,5 @@
 import {addParameters} from '@storybook/preact';
-
 addParameters({
-  // "Local" URL prefix to fetch JS files for a specific build (eg. dev server)
-  localBaseUrl: "https://localhost:8000/dist",
-
-  // Binary files are named differently than the CDN when running the `gulp` dev
-  // server. If the localBaseUrl points to this local server, set this to true
-  // (default). Otherwise, JS file paths are like the CDN.
-  // 
-  // localAlternateNames:
-  //      true   amp.js   amp-list-0.1.max.js   ...
-  //      false  v0.js    amp-list-0.1.js       ...
-  localAlternateNames: true,
+  // These are added as "source" options from which to load AMP binaries.
+  ampBaseUrlOptions: ['https://this-404s-expected/custom/dist'],
 });
