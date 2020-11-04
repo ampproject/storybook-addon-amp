@@ -163,7 +163,7 @@ function getAmpUrl(
 ): string {
   let {baseUrl} = config;
   const unminifiedFiles = baseUrl.startsWith('http://localhost');
-  if (config.baseUrl === SOURCE_BASE_URL.cdn && config.rtv) {
+  if (baseUrl === SOURCE_BASE_URL.cdn && config.rtv) {
     baseUrl += `/rtv/${config.rtv}`;
   }
   const ext =
@@ -171,11 +171,11 @@ function getAmpUrl(
 
   // v0.js
   if (module === "amp") {
-    return `${config.baseUrl}/${unminifiedFiles ? "amp" : "v0"}.${ext}`;
+    return `${baseUrl}/${unminifiedFiles ? "amp" : "v0"}.${ext}`;
   }
 
   // Extension.
-  return `${config.baseUrl}/v0/${module}-${version || "0.1"}${
+  return `${baseUrl}/v0/${module}-${version || "0.1"}${
     unminifiedFiles ? ".max" : ""
   }.${ext}`;
 }
