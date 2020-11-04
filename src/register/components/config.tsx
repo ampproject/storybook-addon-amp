@@ -24,7 +24,7 @@ export interface Config {
 }
 
 export const SOURCE_BASE_URL: {[label: string]: string} = {
-  cdn: "https://cdn.ampproject.org",
+  cdn: "https://cdn.ampproject.org/",
   local: "http://localhost:8000/dist",
 };
 
