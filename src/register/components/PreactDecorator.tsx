@@ -15,7 +15,6 @@
  */
 
 /** @jsx h */
-import { DEFAULT_LOCAL_BASE_URL } from './parameters'
 import { h } from "preact";
 import flush from "styled-jsx/server";
 import { renderToString as preactRenderToString } from "preact-render-to-string";
