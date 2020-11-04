@@ -162,9 +162,10 @@ function getAmpUrl(
   type: string,
   config: Config,
 ): string {
-  const unminifiedFiles = config.baseUrl.startsWith('http://localhost');
+  let {baseUrl} = config;
+  const unminifiedFiles = baseUrl.startsWith('http://localhost');
   if (config.baseUrl === SOURCE_BASE_URL.cdn && config.rtv) {
-    origin += `/rtv/${config.rtv}`;
+    baseUrl += `/rtv/${config.rtv}`;
   }
   const ext =
     type === "css" ? "css" : config.binary === "no-modules" ? "js" : "mjs";
