@@ -31,7 +31,7 @@ export const SourceSelect: FunctionComponent<{
     if (window.location.hostname !== SOURCE_BASE_URL.cdn) {
       options.push(SOURCE_BASE_URL.local);
     }
-    return [...options, ...ampBaseUrlOptions].map((url) => new URL(url));
+    return options.concat(ampBaseUrlOptions).map((url) => new URL(url));
   }, [ampBaseUrlOptions]);
 
   return (
