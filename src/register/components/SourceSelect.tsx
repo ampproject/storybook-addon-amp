@@ -27,7 +27,7 @@ export const SourceSelect: FunctionComponent<{
 }> = ({ onChange, value, ampBaseUrlOptions }) => {
   const options = useMemo<URL[]>(() => {
     const options = [SOURCE_BASE_URL.cdn];
-    if (window.location.hostname !== SOURCE_BASE_URL.cdn) {
+    if (window.location.origin !== SOURCE_BASE_URL.cdn) {
       options.push(SOURCE_BASE_URL.local);
     }
     return options.concat(ampBaseUrlOptions).map((url) => new URL(url));
