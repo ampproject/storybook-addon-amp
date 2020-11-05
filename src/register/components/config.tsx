@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-import {AddonName} from "../../addon";
+import { AddonName } from "../../addon";
 
 export interface Config {
   mode: string;
   binary: string;
-  source: string;
+  baseUrl: string;
+  rtv: string;
 }
+
+export const SOURCE_BASE_URL: {[label: string]: string} = {
+  cdn: "https://cdn.ampproject.org/",
+  local: "http://localhost:8000/dist",
+};
 
 export const defaultConfig: Config = {
   mode: "ampdoc", // "ampdoc", "bento"
   binary: "no-modules", // "no-modules", "modules"
-  source: "cdn", // "cdn", "local"
+  baseUrl: SOURCE_BASE_URL.cdn,
+  rtv: "",
 };
 
 const STORAGE_NAME = `${AddonName}.config`;
@@ -34,7 +41,8 @@ export function sameConfig(c1: Config, c2: Config): boolean {
   return (
     c1.mode === c2.mode &&
     c1.binary === c2.binary &&
-    c1.source === c2.source
+    c1.baseUrl === c2.baseUrl &&
+    c1.rtv === c2.rtv
   );
 }
 
@@ -49,7 +57,8 @@ export function getPersistedConfig(): Config {
       ...defaultConfig,
       mode: parsed["mode"],
       binary: parsed["binary"],
-      source: parsed["source"],
+      baseUrl: parsed["baseUrl"] || SOURCE_BASE_URL[parsed["source"]],
+      rtv: parsed["rtv"],
     };
   } catch (e) {
     rethrowAsync(e);
@@ -62,7 +71,8 @@ export function persistConfig(config: Config) {
     localStorage.setItem(STORAGE_NAME, JSON.stringify({
       "mode": config.mode,
       "binary": config.binary,
-      "source": config.source,
+      "baseUrl": config.baseUrl,
+      "rtv": config.rtv,
     }));
   } catch (e) {
     rethrowAsync(e);

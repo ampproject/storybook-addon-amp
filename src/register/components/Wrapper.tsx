@@ -15,15 +15,29 @@
  */
 
 /** @jsx jsx */
-import { Fragment, SFC, useEffect, useState, useCallback, useRef } from "react";
+import {
+  Fragment,
+  FunctionComponent,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import { jsx, styled } from "@storybook/theming";
 import addons from "@storybook/addons";
 import { STORY_CHANGED } from "@storybook/core-events";
+import { SourceSelect } from "./SourceSelect";
 
 import { ScrollArea, Form } from "@storybook/components";
+import { useParameter } from "@storybook/api";
 
 import { Events, ParameterName } from "../../addon";
-import {Config, getPersistedConfig, persistConfig} from "./config";
+import {
+  Config,
+  SOURCE_BASE_URL,
+  getPersistedConfig,
+  persistConfig,
+} from "./config";
 
 const PanelWrapper = styled(({ children, className }) => (
   <ScrollArea horizontal vertical className={className}>
@@ -42,10 +56,23 @@ interface Props {
   active: boolean;
 }
 
-export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
+const HorizontalFormFields = styled.div({
+  display: "flex",
+  flexWrap: "wrap",
+  "&& > *": {
+    flex: 1,
+    minWidth: 400,
+  },
+  "&& > :last-child": {
+    marginBottom: 0,
+  },
+});
+
+export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
   const [config, setConfig] = useState<Config>(getPersistedConfig);
   const configRef = useRef(config);
   configRef.current = config;
+  const ampBaseUrlOptions = useParameter<string[]>("ampBaseUrlOptions", []);
 
   const updateConfig = useCallback(
     (newConfig) => {
@@ -63,7 +90,7 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
 
     channel.on(STORY_CHANGED, onStoryChanged);
     channel.on(Events.AskConfig, onStoryChanged);
-    
+
     return () => {
       channel.removeListener(STORY_CHANGED, onStoryChanged);
       channel.removeListener(Events.AskConfig, onStoryChanged);
@@ -89,23 +116,33 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
           </g>
         </svg>
         <Form>
-          <Form.Field key={"source"} label={"Source"}>
-            <Form.Select
-              value={config?.source}
-              name={"source"}
-              onChange={(e) => {
-                updateConfig({ ...config, source: e.target.value, binary: "no-modules" });
-              }}
-              size="flex"
-            >
-              <option key={"cdn"} value={"cdn"}>
-                {"cdn.ampproject.org"}
-              </option>
-              <option key={"local"} value={"local"}>
-                {"localhost"}
-              </option>
-            </Form.Select>
-          </Form.Field>
+          <HorizontalFormFields>
+            <Form.Field key={"source"} label={"Source"}>
+              <SourceSelect
+                ampBaseUrlOptions={ampBaseUrlOptions}
+                value={config?.baseUrl}
+                onChange={(e) => {
+                  updateConfig({ ...config, baseUrl: e.target.value });
+                }}
+              />
+            </Form.Field>
+            <Form.Field key={"RTV"} label={"RTV"}>
+              <Form.Input
+                value={config?.rtv}
+                name="rtv"
+                onChange={(e) => {
+                  updateConfig({ ...config, rtv: e.currentTarget.value });
+                }}
+                disabled={config?.baseUrl !== SOURCE_BASE_URL.cdn}
+                placeholder={
+                  config?.baseUrl === SOURCE_BASE_URL.cdn
+                    ? "(default)"
+                    : "To change local RTV, checkout a release branch."
+                }
+                size="flex"
+              />
+            </Form.Field>
+          </HorizontalFormFields>
           <Form.Field key={"binary"} label={"Binary"}>
             <Form.Select
               value={config?.binary}
@@ -119,7 +156,7 @@ export const Wrapper: SFC<Props> = ({ active, api, channel }) => {
                 {"v0.js (nomodule)"}
               </option>
               <option key={"modules"} value={"modules"}>
-                {"v0.mjs (type=\"module\")"}
+                {'v0.mjs (type="module")'}
               </option>
             </Form.Select>
           </Form.Field>

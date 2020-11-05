@@ -22,7 +22,7 @@ import { useEffect, useRef, useState } from "@storybook/client-api";
 import addons, { StoryWrapper } from "@storybook/addons";
 
 import { Events } from "../../addon";
-import { Config, defaultConfig, sameConfig } from "./config";
+import { SOURCE_BASE_URL, Config, defaultConfig, sameConfig } from "./config";
 import { useBentoMode } from "./bento";
 
 const EXT_TYPES = {
@@ -149,35 +149,35 @@ function getExtType(name: string) {
 }
 
 function getBase(config: Config): string {
-  const isLocal = config.source === "local";
-  const baseUrl =
-    isLocal
-      ? "http://localhost:8000/"
-      : "";
-  if (!baseUrl) {
-    return '';
+  if (!config.baseUrl.startsWith("http://localhost")) {
+    return "";
   }
-  return `<base href="${baseUrl}">`;
+  return `<base href="${new URL(config.baseUrl).origin}">`;
 }
 
-function getAmpUrl(module: string, version: string|null, type: string, config: Config): string {
-  const isLocal = config.source === "local";
-  const baseUrl =
-    isLocal
-      ? "http://localhost:8000/dist"
-      : "https://cdn.ampproject.org";
+function getAmpUrl(
+  module: string,
+  version: string | null,
+  type: string,
+  config: Config,
+): string {
+  let {baseUrl} = config;
+  const unminifiedFiles = baseUrl.startsWith('http://localhost');
+  if (baseUrl === SOURCE_BASE_URL.cdn && config.rtv) {
+    baseUrl += `/rtv/${config.rtv}`;
+  }
   const ext =
-    type === "css" ?
-    "css" :
-    config.binary === "no-modules" ? "js" : "mjs";
+    type === "css" ? "css" : config.binary === "no-modules" ? "js" : "mjs";
 
   // v0.js
   if (module === "amp") {
-    return `${baseUrl}/${isLocal ? 'amp' : 'v0'}.${ext}`;
+    return `${baseUrl}/${unminifiedFiles ? "amp" : "v0"}.${ext}`;
   }
 
   // Extension.
-  return `${baseUrl}/v0/${module}-${version || '0.1'}${isLocal ? '.max' : ''}.${ext}`;
+  return `${baseUrl}/v0/${module}-${version || "0.1"}${
+    unminifiedFiles ? ".max" : ""
+  }.${ext}`;
 }
 
 export default Decorator;
