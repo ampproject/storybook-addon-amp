@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 /** @jsx jsx */
-import {
-  useEffect,
-  useState,
-  useCallback,
-  useRef,
-  useMemo,
-} from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { jsx, styled } from "@storybook/theming";
 import { Form } from "@storybook/components";
 
@@ -90,7 +84,9 @@ export const VersionComboInput = ({ onChange, defaultValue, ...rest }) => {
     () =>
       Object.keys(channelRtvs).map((label) =>
         channelRtvs[label] ? (
-          <option value={channelRtvs[label]}>{label}</option>
+          <option key={label} value={channelRtvs[label]}>
+            {label}
+          </option>
         ) : (
           ""
         )
