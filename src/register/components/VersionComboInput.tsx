@@ -141,7 +141,9 @@ export const VersionComboInput = ({ onChange, defaultValue, ...rest }) => {
       />
       {value.length === 0 && (
         <div style={{ marginLeft: 6 }}>
-          <a href="https://cdn.ampproject.org/experiments.html">set opt-in</a>
+          <a href="https://cdn.ampproject.org/experiments.html" target="_blank">
+            set opt-in
+          </a>
         </div>
       )}
     </VersionComboInputContainer>
