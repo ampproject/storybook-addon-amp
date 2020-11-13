@@ -26,11 +26,11 @@ export const SourceSelect: FunctionComponent<{
   ampBaseUrlOptions: string[];
 }> = ({ onChange, value, ampBaseUrlOptions }) => {
   const options = useMemo<URL[]>(() => {
-    const options = [SOURCE_BASE_URL.cdn];
+    const options = ampBaseUrlOptions.concat(SOURCE_BASE_URL.cdn);
     if (window.location.origin !== SOURCE_BASE_URL.cdn.replace(/\/$/, '')) {
       options.push(SOURCE_BASE_URL.local);
     }
-    return options.concat(ampBaseUrlOptions).map((url) => new URL(url));
+    return options.map((url) => new URL(url));
   }, [ampBaseUrlOptions]);
 
   return (

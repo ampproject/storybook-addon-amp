@@ -38,6 +38,7 @@ import {
   getPersistedConfig,
   persistConfig,
 } from "./config";
+import { VersionComboInput } from "./VersionComboInput";
 
 const PanelWrapper = styled(({ children, className }) => (
   <ScrollArea horizontal vertical className={className}>
@@ -126,20 +127,18 @@ export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
                 }}
               />
             </Form.Field>
-            <Form.Field key={"RTV"} label={"RTV"}>
-              <Form.Input
-                value={config?.rtv}
-                name="rtv"
+            <Form.Field key={"Version"} label={"Version"}>
+              <VersionComboInput
+                defaultValue={config?.rtv}
                 onChange={(e) => {
                   updateConfig({ ...config, rtv: e.currentTarget.value });
                 }}
                 disabled={config?.baseUrl !== SOURCE_BASE_URL.cdn}
                 placeholder={
                   config?.baseUrl === SOURCE_BASE_URL.cdn
-                    ? "(default)"
+                    ? "default"
                     : "To change local RTV, checkout a release branch."
                 }
-                size="flex"
               />
             </Form.Field>
           </HorizontalFormFields>
