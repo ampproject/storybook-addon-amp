@@ -113,7 +113,7 @@ export const VersionComboInput = ({ onChange, defaultValue, ...rest }) => {
   );
 
   useEffect(() => {
-    fetchChannelRtvs().then((labeled) => setChannelRtvs(labeled));
+    fetchChannelRtvs().then(setChannelRtvs);
   }, []);
 
   return (
