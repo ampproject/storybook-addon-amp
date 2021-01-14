@@ -60,7 +60,7 @@
     "preact": "^10.4.1",
     "preact-render-to-string": "^5.1.7",
     "react-dom": "^16.13.1",
-    "react-pdf": "^4.0.5",
+    "react-pdf": "^5.0.0",
     "styled-jsx": "^3.2.5"
   },
   "publishConfig": {
