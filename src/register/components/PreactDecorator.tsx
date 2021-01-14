@@ -22,7 +22,7 @@ import { useEffect, useRef, useState } from "@storybook/client-api";
 import addons, { StoryWrapper } from "@storybook/addons";
 
 import { Events } from "../../addon";
-import { Config, defaultConfig } from "./config";
+import { SOURCE_BASE_URL, Config, defaultConfig, sameConfig } from "./config";
 import { useBentoMode } from "./bento";
 
 const EXT_TYPES = {
@@ -31,12 +31,21 @@ const EXT_TYPES = {
 
 export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
   const [config, setConfig] = useState<Config>(defaultConfig);
+  const configRef = useRef<Config>(config);
+  configRef.current = config;
 
   useEffect(() => {
     const channel = addons.getChannel();
-    channel.on(Events.UpdateConfig, setConfig);
+    channel.emit(Events.AskConfig);
+
+    const onUpdatedConfig = (config) => {
+      if (!sameConfig(config, configRef.current)) {
+        setConfig(config);
+      }
+    };
+    channel.on(Events.UpdateConfig, onUpdatedConfig);
     return () => {
-      channel.removeListener(Events.UpdateConfig, setConfig);
+      channel.removeListener(Events.UpdateConfig, onUpdatedConfig);
     };
   }, []);
 
@@ -65,6 +74,7 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
             <meta charSet="utf-8" />
             <title>AMP Page Example</title>
             <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
+            ${getBase(config)}
             ${
               context?.parameters?.experiments?.length > 0 ?
               `<script>
@@ -138,24 +148,36 @@ function getExtType(name: string) {
   return EXT_TYPES[name] || 'element';
 }
 
-function getAmpUrl(module: string, version: string|null, type: string, config: Config): string {
-  const isLocal = config.source === "local";
-  const baseUrl =
-    isLocal
-      ? "http://localhost:8000/dist"
-      : "https://cdn.ampproject.org";
+function getBase(config: Config): string {
+  if (!config.baseUrl.startsWith("http://localhost")) {
+    return "";
+  }
+  return `<base href="${new URL(config.baseUrl).origin}">`;
+}
+
+function getAmpUrl(
+  module: string,
+  version: string | null,
+  type: string,
+  config: Config,
+): string {
+  let {baseUrl} = config;
+  const unminifiedFiles = baseUrl.startsWith('http://localhost');
+  if (baseUrl === SOURCE_BASE_URL.cdn && config.rtv) {
+    baseUrl += `/rtv/${config.rtv}`;
+  }
   const ext =
-    type === "css" ?
-    "css" :
-    config.binary === "no-modules" ? "js" : "mjs";
+    type === "css" ? "css" : config.binary === "no-modules" ? "js" : "mjs";
 
   // v0.js
   if (module === "amp") {
-    return `${baseUrl}/${isLocal ? 'amp' : 'v0'}.${ext}`;
+    return `${baseUrl}/${unminifiedFiles ? "amp" : "v0"}.${ext}`;
   }
 
   // Extension.
-  return `${baseUrl}/v0/${module}-${version || '0.1'}${isLocal ? '.max' : ''}.${ext}`;
+  return `${baseUrl}/v0/${module}-${version || "0.1"}${
+    unminifiedFiles ? ".max" : ""
+  }.${ext}`;
 }
 
 export default Decorator;
