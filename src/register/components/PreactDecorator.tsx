@@ -75,6 +75,7 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
             <title>AMP Page Example</title>
             <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
             ${getBase(config)}
+            ${get3pIframeMeta(config)}
             ${
               context?.parameters?.experiments?.length > 0 ?
               `<script>
@@ -153,6 +154,15 @@ function getBase(config: Config): string {
     return "";
   }
   return `<base href="${new URL(config.baseUrl).origin}">`;
+}
+
+function get3pIframeMeta(config: Config): string {
+  if (!config.baseUrl.startsWith("http://localhost")) {
+    return "";
+  }
+  const baseUrl3p = config.baseUrl.replace('//localhost', '//ads.localhost');
+  const src3p = new URL('/dist.3p/current/frame.max.html', baseUrl3p).href;
+  return `<meta name="amp-3p-iframe-src" content="${src3p}">`;
 }
 
 function getAmpUrl(
