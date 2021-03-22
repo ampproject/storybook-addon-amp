@@ -25,7 +25,7 @@ storiesOf('amp-base-carousel-1.0', module)
   .addDecorator(withAmp)
   .addParameters({
     extensions: [{name: 'amp-base-carousel', version: '1.0'}],
-    experiments: ['amp-base-carousel-bento'],
+    experiments: ['bento'],
   })
   .add('default', () => {
     const slide1 = text('slide1', 'lightcoral');
