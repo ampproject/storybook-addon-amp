@@ -16,33 +16,44 @@
 
 /** @jsx h */
 import { h } from 'preact';
-import {storiesOf} from '@storybook/preact';
-import {withAmp} from '../esm';
-import {text, withKnobs} from '@storybook/addon-knobs';
+import { withAmp } from '../esm';
+import { text, withKnobs } from '@storybook/addon-knobs';
 
-storiesOf('amp-base-carousel-1.0', module)
-  .addDecorator(withKnobs)
-  .addDecorator(withAmp)
-  .addParameters({
-    extensions: [{name: 'amp-base-carousel', version: '1.0'}],
+export default {
+  title: 'amp-base-carousel-1.0',
+  decorators: [withKnobs, withAmp],
+
+  parameters: {
+    extensions: [{ name: 'amp-base-carousel', version: '1.0' }],
     experiments: ['bento'],
-  })
-  .add('default', () => {
-    const slide1 = text('slide1', 'lightcoral');
-    return (
-      <amp-base-carousel width="440" height="225">
-        {[slide1, 'peachpuff', 'lavender'].map((color) => (
-          <div key={color}>{color}</div>
-        ))}
-      </amp-base-carousel>
-    );
-  })
-  .add('other', () => {
-    return (
-      <amp-base-carousel width="440" height="225">
-        {['peachpuff', 'lavender'].map((color) => (
-          <div key={color}>{color}</div>
-        ))}
-      </amp-base-carousel>
-    );
-  });
+  },
+};
+
+export const Default = () => {
+  const slide1 = text('slide1', 'lightcoral');
+  return (
+    <amp-base-carousel width="440" height="225">
+      {[slide1, 'peachpuff', 'lavender'].map((color) => (
+        <div key={color}>{color}</div>
+      ))}
+    </amp-base-carousel>
+  );
+};
+
+Default.story = {
+  name: 'default',
+};
+
+export const Other = () => {
+  return (
+    <amp-base-carousel width="440" height="225">
+      {['peachpuff', 'lavender'].map((color) => (
+        <div key={color}>{color}</div>
+      ))}
+    </amp-base-carousel>
+  );
+};
+
+Other.story = {
+  name: 'other',
+};

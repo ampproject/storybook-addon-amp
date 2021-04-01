@@ -15,25 +15,31 @@
  */
 
 /** @jsx h */
-import { h } from "preact";
-import { storiesOf } from "@storybook/preact";
-import { withAmp } from "../esm";
-import { text, withKnobs } from "@storybook/addon-knobs";
+import { h } from 'preact';
+import { withAmp } from '../esm';
+import { withKnobs } from '@storybook/addon-knobs';
 
-storiesOf("amp-script-0.1", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withAmp)
-  .addParameters({
-    extensions: [{ name: "amp-script", version: "0.1" }],
-  })
-  .add("amp-script", () => (
-    <div>
-      Open console, see "amp-script executed".
-      <amp-script id="dataFunctions" script="local-script" nodom></amp-script>
-      <script id="local-script" type="text/plain" target="amp-script">
-        {`
+export default {
+  title: 'amp-script-0.1',
+  decorators: [withKnobs, withAmp],
+
+  parameters: {
+    extensions: [{ name: 'amp-script', version: '0.1' }],
+  },
+};
+
+export const AmpScript = () => (
+  <div>
+    Open console, see "amp-script executed".
+    <amp-script id="dataFunctions" script="local-script" nodom></amp-script>
+    <script id="local-script" type="text/plain" target="amp-script">
+      {`
         console.log('amp-script executed');
         `}
-      </script>
-    </div>
-  ));
+    </script>
+  </div>
+);
+
+AmpScript.story = {
+  name: 'amp-script',
+};
