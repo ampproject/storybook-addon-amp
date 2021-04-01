@@ -24,6 +24,7 @@ import addons, { StoryWrapper } from "@storybook/addons";
 import { Events } from "../../addon";
 import { SOURCE_BASE_URL, Config, defaultConfig, sameConfig } from "./config";
 import { useBentoMode } from "./bento";
+import { collectInlineAmpScripts, maybeGenerateCspHashMeta } from "../../util/amp-script";
 
 const EXT_TYPES = {
   'amp-mustache': 'template',
@@ -49,7 +50,11 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
     };
   }, []);
 
-  const contents = preactRenderToString(getStory(context));
+  const storyTree = getStory(context);
+
+  const inlineScripts = collectInlineAmpScripts(storyTree);
+
+  const contents = preactRenderToString(storyTree);
   const styleElements = flush();
   const styles = preactRenderToString(
     <style
@@ -74,6 +79,7 @@ export const Decorator: StoryWrapper = (getStory, context, { parameters }) => {
             <meta charSet="utf-8" />
             <title>AMP Page Example</title>
             <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
+            ${maybeGenerateCspHashMeta(inlineScripts)}
             ${getBase(config)}
             ${get3pIframeMeta(config)}
             ${
