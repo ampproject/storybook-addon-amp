@@ -16,9 +16,8 @@
 
 import { createHash } from "crypto";
 
-const hash = createHash("sha384");
-
 export function generateCspHash(script) {
+  const hash = createHash("sha384");
   const data = hash.update(script, "utf8");
 
   return (
