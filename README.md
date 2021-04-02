@@ -13,7 +13,7 @@ hosted `v0.js`).
 First, add the `@ampproject/storybook-addon` to your project:
 
 ```sh
-yarn add @ampproject/storybook-addon --dev
+npm install --save-dev @ampproject/storybook-addon
 ```
 
 Second, register the `@ampproject/storybook-addon` to your
