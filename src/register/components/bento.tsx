@@ -66,7 +66,7 @@ export function useBentoMode(
       parent.appendChild(iframe);
     }
 
-    const readyPromise = new Promise((resolve) => {
+    const readyPromise = new Promise<void>((resolve) => {
       const isReady = () => {
         const iframeDoc = iframe!.contentDocument;
         return (

@@ -25,7 +25,7 @@ import { Wrapper } from "./components/Wrapper";
 addons.register(AddonName, (api) => {
   addons.addPanel(PanelName, {
     title: "AMP",
-    render({ active, key }) {
+    render({ active = false, key }) {
       return (
         <Wrapper
           key={key}
