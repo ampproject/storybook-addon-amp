@@ -21,7 +21,7 @@ import {
   SOURCE_BASE_URL,
   getPersistedConfig,
   persistConfig,
-} from './config';
+} from '../../util/config';
 import {VersionComboInput} from './VersionComboInput';
 
 const PanelWrapper = styled(({children, className}) => (
