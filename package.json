@@ -37,11 +37,13 @@
     "babel-loader": "8.2.3",
     "core-js": "3.21.0",
     "esbuild": "0.14.21",
+    "minimist": "1.2.5",
     "react": "17.0.2"
   },
   "scripts": {
     "dev": "tsc --watch --preserveWatchOutput",
     "build": "node bin/build.mjs",
+    "watch": "npm run build -- --watch",
     "test": "echo 'No tests' && exit 0",
     "clean": "rm -r esm dist",
     "prepublishOnly": "npm run build",

@@ -1,5 +1,8 @@
 import esbuild from 'esbuild';
 import {readFile} from 'fs/promises';
+import minimist from 'minimist';
+
+const argv = minimist(process.argv.slice(2));
 
 const readJson = async (path) =>
   JSON.parse(await readFile(new URL(path, import.meta.url)));
@@ -46,6 +49,7 @@ async function build() {
         platform: 'node',
         logLevel: 'info',
         plugins: [preactCompatPlugin],
+        watch: argv.watch,
         external,
         outdir,
         ...options,
