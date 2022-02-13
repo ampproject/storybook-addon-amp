@@ -1,4 +1,4 @@
-import {AddonName} from '../../addon';
+import {AddonName} from '../addon';
 
 export interface Config {
   mode: string;
@@ -45,7 +45,7 @@ export function getPersistedConfig(): Config {
       rtv: parsed['rtv'],
     };
   } catch (e) {
-    rethrowAsync(e);
+    rethrowAsync(e as Error);
   }
   return defaultConfig;
 }
@@ -62,7 +62,7 @@ export function persistConfig(config: Config) {
       })
     );
   } catch (e) {
-    rethrowAsync(e);
+    rethrowAsync(e as Error);
   }
 }
 
