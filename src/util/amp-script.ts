@@ -15,6 +15,7 @@
  */
 
 import { createHash } from "crypto";
+import { collectNodes } from "./vnode";
 
 export function generateCspHash(script) {
   const hash = createHash("sha384");
@@ -30,23 +31,19 @@ export function generateCspHash(script) {
   );
 }
 
-export function collectInlineAmpScripts(tree) {
-  let scripts: string[] = [];
-  for (const child of tree?.props?.children ?? []) {
-    if (
-      child.type === "script" &&
-      child.props?.target === "amp-script" &&
-      typeof child.props?.children === "string"
-    ) {
-      scripts.push(child.props.children);
-    } else {
-      scripts = [...scripts, ...collectInlineAmpScripts(child)];
-    }
-  }
-  return scripts;
+export function collectInlineAmpScripts(
+  tree: preact.VNode<{ target?: string }>
+): string[] {
+  return collectNodes(
+    tree,
+    (node) =>
+      node?.type === "script" &&
+      node?.props?.target === "amp-script" &&
+      typeof node?.props?.children === "string"
+  ).map(({ props }) => props.children) as string[];
 }
 
-export function maybeGenerateCspHashMeta(scripts) {
+export function maybeGenerateCspHashMeta(scripts: string[]) {
   if (scripts.length < 1) {
     return "";
   }
