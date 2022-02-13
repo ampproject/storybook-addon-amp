@@ -111,10 +111,6 @@ export const VersionComboInput = ({onChange, defaultValue, ...rest}) => {
           updateValue(e.target.value);
           inputRef.current?.focus();
         }}
-        // TODO(alanorozco): TS is complaining without these props
-        translate={null}
-        onAuxClick={null}
-        onAuxClickCapture={null}
       >
         <option value="">by RTV</option>
         <optgroup label="channels">{channels}</optgroup>
@@ -127,10 +123,6 @@ export const VersionComboInput = ({onChange, defaultValue, ...rest}) => {
         onChange={(e) => {
           updateValue(e.currentTarget.value);
         }}
-        // TODO(alanorozco): TS is complaining without these props
-        translate={null}
-        onAuxClick={null}
-        onAuxClickCapture={null}
       />
       {value.length === 0 && (
         <div style={{marginLeft: 6}}>
