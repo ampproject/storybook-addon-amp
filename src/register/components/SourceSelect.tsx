@@ -2,7 +2,7 @@
 import {FunctionComponent, useMemo} from 'react';
 import {Form} from '@storybook/components';
 import {jsx} from '@storybook/theming';
-import {SOURCE_BASE_URL} from './config';
+import {SOURCE_BASE_URL} from '../../util/config';
 
 export const SourceSelect: FunctionComponent<{
   onChange: (InputEvent) => void;

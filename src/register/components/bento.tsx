@@ -3,14 +3,15 @@ import {h} from 'preact';
 import {useEffect} from '@storybook/client-api';
 import {render} from 'preact';
 import type {RefObject} from 'react';
-import type {Config} from './config';
-import type {StoryContext, StoryGetter} from '@storybook/addons';
+import type {Config} from '../../util/config';
+import type {StoryContext, LegacyStoryFn} from '@storybook/addons';
+import type {VNode} from 'preact';
 
 export function useBentoMode(
   ref: RefObject<HTMLDivElement>,
   config: Config,
   ampHtml: string,
-  getStory: StoryGetter,
+  getStory: LegacyStoryFn,
   context: StoryContext
 ) {
   useEffect(() => {
@@ -75,7 +76,7 @@ export function useBentoMode(
     });
     readyPromise.then(() => {
       const iframeDoc = iframe!.contentDocument!;
-      render(getStory(context), iframeDoc.body);
+      render(getStory(context) as VNode, iframeDoc.body);
     });
   });
 }
