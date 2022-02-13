@@ -15,12 +15,12 @@
  */
 
 /** @jsx h */
-import { h } from "preact";
-import { useEffect } from "@storybook/client-api";
-import { render } from "preact";
-import type { RefObject } from "react";
-import type { Config } from "./config";
-import type { StoryContext, StoryGetter } from "@storybook/addons";
+import {h} from 'preact';
+import {useEffect} from '@storybook/client-api';
+import {render} from 'preact';
+import type {RefObject} from 'react';
+import type {Config} from './config';
+import type {StoryContext, StoryGetter} from '@storybook/addons';
 
 export function useBentoMode(
   ref: RefObject<HTMLDivElement>,
@@ -44,12 +44,14 @@ export function useBentoMode(
     if (!placeholder || !parent) {
       return;
     }
-    let iframe = parent.querySelector('#amp-iframe') as HTMLIFrameElement|null;
+    let iframe = parent.querySelector(
+      '#amp-iframe'
+    ) as HTMLIFrameElement | null;
     if (!iframe) {
       const doc = parent.ownerDocument;
-      iframe = doc.createElement("iframe") as HTMLIFrameElement;
+      iframe = doc.createElement('iframe') as HTMLIFrameElement;
       iframe.id = 'amp-iframe';
-      iframe.setAttribute("title", "AMP Document container");
+      iframe.setAttribute('title', 'AMP Document container');
       iframe.style.cssText = `
         position: absolute;
         top: 0;
@@ -60,7 +62,7 @@ export function useBentoMode(
         background-color: #fff;
       `;
 
-      const blob = new Blob([ampHtml], { type: "text/html" });
+      const blob = new Blob([ampHtml], {type: 'text/html'});
       const blobUrl = URL.createObjectURL(blob);
       iframe.src = blobUrl;
       parent.appendChild(iframe);
