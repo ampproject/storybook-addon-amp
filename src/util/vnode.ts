@@ -6,10 +6,10 @@ export function collectNodes<T>(
   clear = false
 ): VNode<T>[] {
   const collected: VNode<T>[] = [];
-  if (!tree) {
+  const children = tree?.props?.children;
+  if (!children) {
     return collected;
   }
-  const children = tree.props.children;
   if (!Array.isArray(children)) {
     const child = children as VNode<T>;
     if (filter(children as VNode<T>)) {
@@ -19,7 +19,7 @@ export function collectNodes<T>(
       }
     }
   } else {
-    for (const [i, child] of (children as VNode<T>[]).entries()) {
+    for (const [i, child] of Array.from((children as VNode<T>[]).entries())) {
       if (filter(child)) {
         collected.push(child);
         if (clear) {
