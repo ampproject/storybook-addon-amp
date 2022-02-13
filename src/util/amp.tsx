@@ -3,9 +3,11 @@ import {h} from 'preact';
 import {renderToString as preactRenderToString} from 'preact-render-to-string';
 import {SOURCE_BASE_URL, Config} from './config';
 import {collectNodes} from './vnode';
-import {encodeHtmlEntities} from './html';
+import {HtmlChildren} from './html';
 import {createHash} from 'crypto';
 import type {VNode} from 'preact';
+import {AmpParameters} from '../addon';
+import {getRtvUrl} from './cdn-url';
 
 const EXT_TYPES = {
   'amp-mustache': 'template',
@@ -62,16 +64,16 @@ function getExtType(name: string) {
   return EXT_TYPES[name] || 'element';
 }
 
-function getBase(config: Config): string {
+function maybeGetBaseHref(config: Config): HtmlChildren {
   if (!config.baseUrl.startsWith('http://localhost')) {
-    return '';
+    return null;
   }
   return `<base href="${new URL(config.baseUrl).origin}">`;
 }
 
-function get3pIframeMeta(config: Config): string {
+function get3pIframeMeta(config: Config): HtmlChildren {
   if (!config.baseUrl.startsWith('http://localhost')) {
-    return '';
+    return null;
   }
   const baseUrl3p = config.baseUrl.replace('//localhost', '//ads.localhost');
   const src3p = new URL('/dist.3p/current/frame.max.html', baseUrl3p).href;
@@ -80,32 +82,30 @@ function get3pIframeMeta(config: Config): string {
 
 function getAmpUrl(
   module: string,
-  version: string | null,
+  version: string | null | undefined,
   type: string,
   config: Config
 ): string {
   let {baseUrl} = config;
   const unminifiedFiles = baseUrl.startsWith('http://localhost');
-  if (baseUrl === SOURCE_BASE_URL.cdn && config.rtv) {
-    baseUrl += `/rtv/${config.rtv}`;
-  }
   const ext =
     type === 'css' ? 'css' : config.binary === 'no-modules' ? 'js' : 'mjs';
 
   // v0.js
   if (module === 'amp') {
-    return `${baseUrl}/${unminifiedFiles ? 'amp' : 'v0'}.${ext}`;
+    return getRtvUrl(`/${unminifiedFiles ? 'amp' : 'v0'}.${ext}`, config);
   }
 
   // Extension.
-  return `${baseUrl}/v0/${module}-${version || '0.1'}${
-    unminifiedFiles ? '.max' : ''
-  }.${ext}`;
+  return getRtvUrl(
+    `/v0/${module}-${version || '0.1'}${unminifiedFiles ? '.max' : ''}.${ext}`,
+    config
+  );
 }
 
-function getAmpToggleExperimentsScript(experiments) {
+function getAmpToggleExperimentsScript(experiments): HtmlChildren {
   if (!experiments?.length) {
-    return '';
+    return null;
   }
   return /* HTML */ `
     <script>
@@ -121,9 +121,9 @@ function getAmpToggleExperimentsScript(experiments) {
 function getAmpScriptAndStylesheet(
   config,
   name,
-  version = null,
-  attributes = ''
-) {
+  version?: string,
+  attrs?: string
+): HtmlChildren {
   return /* HTML */ `
     ${config.binary === 'modules'
       ? /* HTML */ `
@@ -135,47 +135,32 @@ function getAmpScriptAndStylesheet(
       : ''}
     <script
       async
-      ${attributes}
+      ${attrs}
       src="${getAmpUrl(name, version, 'js', config)}"
     ></script>
   `;
 }
 
-export function wrapAmpHtml(tree, config, context) {
-  const {parameters} = context;
-  const boilerplate = `<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>`;
-  return /* HTML */ `
-    <!DOCTYPE html>
-    <html amp lang="en">
-      <head>
-        <meta charset="utf-8" />
-        <title>${encodeHtmlEntities(context.title)}</title>
-        <meta
-          name="viewport"
-          content="width=device-width,minimum-scale=1,initial-scale=1"
-        />
-        ${[
-          maybeGenerateCspHashMeta(collectInlineAmpScripts(tree)),
-          getBase(config),
-          get3pIframeMeta(config),
-          getAmpToggleExperimentsScript(parameters?.experiments),
-          getAmpScriptAndStylesheet(config, 'amp'),
-          boilerplate,
-          parameters?.extensions?.map(({name, version}) =>
-            getAmpScriptAndStylesheet(
-              config,
-              name,
-              version,
-              `custom-${getExtType(name)}="${name}"`
-            )
-          ),
-          getStyleAmpCustom(tree),
-        ]
-          .flat()
-          .filter(Boolean)
-          .join('')}
-      </head>
-      <body></body>
-    </html>
-  `;
+export function getAmphtmlHeadContent(
+  tree: VNode,
+  config: Config,
+  parameters?: AmpParameters
+): HtmlChildren {
+  return [
+    maybeGenerateCspHashMeta(collectInlineAmpScripts(tree)),
+    maybeGetBaseHref(config),
+    get3pIframeMeta(config),
+    getAmpToggleExperimentsScript(parameters?.experiments),
+    getAmpScriptAndStylesheet(config, 'amp'),
+    `<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>`,
+    parameters?.extensions?.map(({name, version}) =>
+      getAmpScriptAndStylesheet(
+        config,
+        name,
+        version,
+        `custom-${getExtType(name)}="${name}"`
+      )
+    ),
+    getStyleAmpCustom(tree),
+  ];
 }
