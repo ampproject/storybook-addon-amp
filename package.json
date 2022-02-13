@@ -2,8 +2,7 @@
   "name": "@ampproject/storybook-addon",
   "version": "1.1.9",
   "description": "Storybook addon for building and testing AMP components",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "module": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ampproject/storybook-addon-amp.git"
@@ -46,7 +45,7 @@
     "build": "node bin/build.mjs",
     "watch": "npm run build -- --watch",
     "test": "echo 'No tests' && exit 0",
-    "clean": "rm -r esm dist",
+    "clean": "rm -r dist",
     "prepublishOnly": "npm run build",
     "storybook": "start-storybook -p 9009 -s public -c test/.storybook",
     "build-storybook": "build-storybook -s public -c test/.storybook"
