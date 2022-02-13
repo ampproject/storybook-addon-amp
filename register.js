@@ -1,1 +1,1 @@
-import './esm/register/index';
+import './dist/register';

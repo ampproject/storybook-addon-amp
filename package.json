@@ -12,7 +12,8 @@
   "author": "The AMP HTML Authors",
   "license": "Apache-2.0",
   "files": [
-    "dist"
+    "dist",
+    "register.js"
   ],
   "peerDependencies": {
     "@storybook/addons": "^6.4.18",
