@@ -4,14 +4,14 @@ import {jsx} from '@storybook/theming';
 
 import {AddonName, PanelName} from '../addon';
 
-import {Wrapper} from './components/Wrapper';
+import {ConfigPanel} from './components/ConfigPanel';
 
 addons.register(AddonName, (api) => {
   addons.addPanel(PanelName, {
     title: 'AMP',
     render({active = false, key}) {
       return (
-        <Wrapper
+        <ConfigPanel
           key={key}
           channel={addons.getChannel()}
           api={api}

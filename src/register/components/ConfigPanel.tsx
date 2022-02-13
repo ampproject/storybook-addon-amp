@@ -15,7 +15,7 @@ import {SourceSelect} from './SourceSelect';
 import {ScrollArea, Form} from '@storybook/components';
 import {useParameter} from '@storybook/api';
 
-import {Events, ParameterName} from '../../addon';
+import {Events} from '../../addon';
 import {
   Config,
   SOURCE_BASE_URL,
@@ -53,8 +53,13 @@ const HorizontalFormFields = styled.div({
   },
 });
 
-export const Wrapper: FunctionComponent<Props> = ({active, api, channel}) => {
+export const ConfigPanel: FunctionComponent<Props> = ({
+  active,
+  api,
+  channel,
+}) => {
   const [config, setConfig] = useState<Config>(getPersistedConfig);
+  const [documentType, setDocumentType] = useState();
   const configRef = useRef(config);
   configRef.current = config;
   const ampBaseUrlOptions = useParameter<string[]>('ampBaseUrlOptions', []);
@@ -75,10 +80,12 @@ export const Wrapper: FunctionComponent<Props> = ({active, api, channel}) => {
 
     channel.on(STORY_CHANGED, onStoryChanged);
     channel.on(Events.AskConfig, onStoryChanged);
+    channel.on(Events.UpdateDocumentType, setDocumentType);
 
     return () => {
       channel.removeListener(STORY_CHANGED, onStoryChanged);
       channel.removeListener(Events.AskConfig, onStoryChanged);
+      channel.removeListener(Events.UpdateDocumentType, setDocumentType);
     };
   }, []);
 
@@ -126,44 +133,30 @@ export const Wrapper: FunctionComponent<Props> = ({active, api, channel}) => {
               />
             </Form.Field>
           </HorizontalFormFields>
-          <Form.Field key={'binary'} label={'Binary'}>
-            <Form.Select
-              value={config?.binary}
-              name={'binary'}
-              onChange={(e) => {
-                updateConfig({...config, binary: e.target.value});
-              }}
-              size="flex"
-            >
-              <option key={'no-modules'} value={'no-modules'}>
-                {'v0.js (nomodule)'}
-              </option>
-              <option key={'modules'} value={'modules'}>
-                {'v0.mjs (type="module")'}
-              </option>
-            </Form.Select>
-          </Form.Field>
-          <Form.Field key={'mode'} label={'Mode'}>
-            <Form.Select
-              value={config?.mode}
-              name={'mode'}
-              onChange={(e) => {
-                updateConfig({...config, mode: e.target.value});
-              }}
-              size="flex"
-            >
-              <option key={'ampdoc'} value={'ampdoc'}>
-                {'AMP'}
-              </option>
-              <option key={'bento'} value={'bento'}>
-                {'Bento'}
-              </option>
-            </Form.Select>
-          </Form.Field>
+          {/* BentoWrapper uses nomodule/module at the same time */}
+          {documentType !== 'bento' && (
+            <Form.Field key={'binary'} label={'Binary'}>
+              <Form.Select
+                value={config?.binary}
+                name={'binary'}
+                onChange={(e) => {
+                  updateConfig({...config, binary: e.target.value});
+                }}
+                size="flex"
+              >
+                <option key={'nomodule'} value={'nomodule'}>
+                  {'v0.js (nomodule)'}
+                </option>
+                <option key={'module'} value={'module'}>
+                  {'v0.mjs (type="module")'}
+                </option>
+              </Form.Select>
+            </Form.Field>
+          )}
         </Form>
       </PanelWrapper>
     </Fragment>
   );
 };
 
-export default Wrapper;
+export default ConfigPanel;
