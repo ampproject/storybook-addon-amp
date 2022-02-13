@@ -19,7 +19,7 @@ npm run build
 You can watch to rebuild on every change using:
 
 ```console
-npm run dev
+npm run watch
 ```
 
 To test, you may run the example Storybook:
@@ -28,7 +28,7 @@ To test, you may run the example Storybook:
 npm run storybook
 ```
 
-For a manual testing workflow, you should run `dev` and `storybook` at the same time.
+For a manual testing workflow, you should run `watch` and `storybook` at the same time.
 
 ## Testing local version elsewhere
 
