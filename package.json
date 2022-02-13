@@ -2,9 +2,8 @@
   "name": "@ampproject/storybook-addon",
   "version": "1.1.9",
   "description": "Storybook addon for building and testing AMP components",
-  "main": "cjs/index.js",
-  "module": "esm/index.js",
-  "types": "esm/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ampproject/storybook-addon-amp.git"
@@ -13,53 +12,47 @@
   "author": "The AMP HTML Authors",
   "license": "Apache-2.0",
   "files": [
-    "esm",
-    "cjs",
-    "register.js"
+    "dist"
   ],
-  "devDependencies": {
-    "@babel/core": "7.9.0",
-    "@babel/preset-react": "7.9.4",
-    "@babel/runtime-corejs3": "7.9.2",
-    "@storybook/addon-actions": "5.3.21",
-    "@storybook/addon-knobs": "5.3.21",
-    "@storybook/addon-links": "5.3.21",
-    "@storybook/addons": "5.3.21",
-    "@storybook/components": "5.3.21",
-    "@storybook/core-events": "5.3.21",
-    "@storybook/preact": "5.3.21",
-    "@storybook/theming": "5.3.21",
-    "@types/react": "16.8.8",
-    "@types/webpack-env": "1.13.9",
-    "babel-loader": "8.0.6",
-    "core-js": "3.6.4",
-    "react": "17.0.2",
-    "typescript": "4.2.3"
-  },
   "peerDependencies": {
-    "@storybook/addons": "^5.0.0",
-    "@storybook/components": "^5.0.0",
-    "@storybook/theming": "^5.0.0",
-    "react": ">=16.8.0"
+    "@storybook/addons": "^6.4.18",
+    "@storybook/components": "^6.4.18",
+    "@storybook/theming": "^6.4.18",
+    "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "7.17.2",
+    "@babel/preset-react": "7.16.7",
+    "@babel/runtime-corejs3": "7.17.2",
+    "@storybook/addon-actions": "6.4.18",
+    "@storybook/addon-knobs": "6.4.0",
+    "@storybook/addon-links": "6.4.18",
+    "@storybook/addons": "6.4.18",
+    "@storybook/components": "6.4.18",
+    "@storybook/core-events": "6.4.18",
+    "@storybook/preact": "6.4.18",
+    "@storybook/theming": "6.4.18",
+    "@types/react": "17.0.39",
+    "@types/webpack-env": "1.16.3",
+    "babel-loader": "8.2.3",
+    "core-js": "3.21.0",
+    "esbuild": "0.14.21",
+    "react": "17.0.2"
   },
   "scripts": {
     "dev": "tsc --watch --preserveWatchOutput",
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir cjs",
+    "build": "node bin/build.mjs",
     "test": "echo 'No tests' && exit 0",
-    "clean": "rm -r esm cjs",
+    "clean": "rm -r esm dist",
     "prepublishOnly": "npm run build",
     "storybook": "start-storybook -p 9009 -s public -c test/.storybook",
     "build-storybook": "build-storybook -s public -c test/.storybook"
   },
   "dependencies": {
-    "@storybook/client-api": "5.3.21",
-    "@types/styled-jsx": "2.2.8",
-    "preact": "10.4.1",
-    "preact-render-to-string": "5.1.7",
-    "react-dom": "16.13.1",
-    "styled-jsx": "3.2.5"
+    "@storybook/client-api": "6.4.18",
+    "preact": "10.6.5",
+    "preact-render-to-string": "5.1.19",
+    "react-dom": "17.0.2"
   },
   "publishConfig": {
     "tag": "latest"
