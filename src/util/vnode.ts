@@ -1,4 +1,4 @@
-import type { VNode } from "preact";
+import type {VNode} from 'preact';
 
 export function collectNodes<T>(
   tree: VNode<T> | null | void,

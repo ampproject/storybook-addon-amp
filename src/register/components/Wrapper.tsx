@@ -22,58 +22,58 @@ import {
   useState,
   useCallback,
   useRef,
-} from "react";
-import { jsx, styled } from "@storybook/theming";
-import addons from "@storybook/addons";
-import { STORY_CHANGED } from "@storybook/core-events";
-import { SourceSelect } from "./SourceSelect";
+} from 'react';
+import {jsx, styled} from '@storybook/theming';
+import addons from '@storybook/addons';
+import {STORY_CHANGED} from '@storybook/core-events';
+import {SourceSelect} from './SourceSelect';
 
-import { ScrollArea, Form } from "@storybook/components";
-import { useParameter } from "@storybook/api";
+import {ScrollArea, Form} from '@storybook/components';
+import {useParameter} from '@storybook/api';
 
-import { Events, ParameterName } from "../../addon";
+import {Events, ParameterName} from '../../addon';
 import {
   Config,
   SOURCE_BASE_URL,
   getPersistedConfig,
   persistConfig,
-} from "./config";
-import { VersionComboInput } from "./VersionComboInput";
+} from './config';
+import {VersionComboInput} from './VersionComboInput';
 
-const PanelWrapper = styled(({ children, className }) => (
+const PanelWrapper = styled(({children, className}) => (
   <ScrollArea horizontal vertical className={className}>
     {children}
   </ScrollArea>
 ))({
-  height: "100%",
-  width: "100%",
-  padding: "16px",
-  justifyContent: "center",
+  height: '100%',
+  width: '100%',
+  padding: '16px',
+  justifyContent: 'center',
 });
 
 interface Props {
-  channel: ReturnType<typeof addons["getChannel"]>;
+  channel: ReturnType<typeof addons['getChannel']>;
   api: any;
   active: boolean;
 }
 
 const HorizontalFormFields = styled.div({
-  display: "flex",
-  flexWrap: "wrap",
-  "&& > *": {
+  display: 'flex',
+  flexWrap: 'wrap',
+  '&& > *': {
     flex: 1,
     minWidth: 400,
   },
-  "&& > :last-child": {
+  '&& > :last-child': {
     marginBottom: 0,
   },
 });
 
-export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
+export const Wrapper: FunctionComponent<Props> = ({active, api, channel}) => {
   const [config, setConfig] = useState<Config>(getPersistedConfig);
   const configRef = useRef(config);
   configRef.current = config;
-  const ampBaseUrlOptions = useParameter<string[]>("ampBaseUrlOptions", []);
+  const ampBaseUrlOptions = useParameter<string[]>('ampBaseUrlOptions', []);
 
   const updateConfig = useCallback(
     (newConfig) => {
@@ -123,71 +123,69 @@ export const Wrapper: FunctionComponent<Props> = ({ active, api, channel }) => {
           onAuxClickCapture={null}
         >
           <HorizontalFormFields>
-            <Form.Field key={"source"} label={"Source"}>
+            <Form.Field key={'source'} label={'Source'}>
               <SourceSelect
                 ampBaseUrlOptions={ampBaseUrlOptions}
                 value={config?.baseUrl}
                 onChange={(e) => {
-                  updateConfig({ ...config, baseUrl: e.target.value });
+                  updateConfig({...config, baseUrl: e.target.value});
                 }}
               />
             </Form.Field>
-            <Form.Field key={"Version"} label={"Version"}>
+            <Form.Field key={'Version'} label={'Version'}>
               <VersionComboInput
                 defaultValue={config?.rtv}
                 onChange={(e) => {
-                  updateConfig({ ...config, rtv: e.currentTarget.value });
+                  updateConfig({...config, rtv: e.currentTarget.value});
                 }}
                 disabled={config?.baseUrl !== SOURCE_BASE_URL.cdn}
                 placeholder={
                   config?.baseUrl === SOURCE_BASE_URL.cdn
-                    ? "default"
-                    : "To change local RTV, checkout a release branch."
+                    ? 'default'
+                    : 'To change local RTV, checkout a release branch.'
                 }
               />
             </Form.Field>
           </HorizontalFormFields>
-          <Form.Field key={"binary"} label={"Binary"}>
+          <Form.Field key={'binary'} label={'Binary'}>
             <Form.Select
               value={config?.binary}
-              name={"binary"}
+              name={'binary'}
               onChange={(e) => {
-                updateConfig({ ...config, binary: e.target.value });
+                updateConfig({...config, binary: e.target.value});
               }}
               size="flex"
-              
               // TODO(alanorozco): TS is complaining without these props
               translate={null}
               onAuxClick={null}
               onAuxClickCapture={null}
             >
-              <option key={"no-modules"} value={"no-modules"}>
-                {"v0.js (nomodule)"}
+              <option key={'no-modules'} value={'no-modules'}>
+                {'v0.js (nomodule)'}
               </option>
-              <option key={"modules"} value={"modules"}>
+              <option key={'modules'} value={'modules'}>
                 {'v0.mjs (type="module")'}
               </option>
             </Form.Select>
           </Form.Field>
-          <Form.Field key={"mode"} label={"Mode"}>
+          <Form.Field key={'mode'} label={'Mode'}>
             <Form.Select
               value={config?.mode}
-              name={"mode"}
+              name={'mode'}
               onChange={(e) => {
-                updateConfig({ ...config, mode: e.target.value });
+                updateConfig({...config, mode: e.target.value});
               }}
               size="flex"
-
               // TODO(alanorozco): TS is complaining without these props
               translate={null}
               onAuxClick={null}
               onAuxClickCapture={null}
             >
-              <option key={"ampdoc"} value={"ampdoc"}>
-                {"AMP"}
+              <option key={'ampdoc'} value={'ampdoc'}>
+                {'AMP'}
               </option>
-              <option key={"bento"} value={"bento"}>
-                {"Bento"}
+              <option key={'bento'} value={'bento'}>
+                {'Bento'}
               </option>
             </Form.Select>
           </Form.Field>

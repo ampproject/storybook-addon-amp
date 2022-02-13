@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 /** @jsx jsx */
-import { useEffect, useState, useCallback, useRef, useMemo } from "react";
-import { jsx, styled } from "@storybook/theming";
-import { Form } from "@storybook/components";
+import {useEffect, useState, useCallback, useRef, useMemo} from 'react';
+import {jsx, styled} from '@storybook/theming';
+import {Form} from '@storybook/components';
 
 const largestWithPrefix = (
   prefix: string,
@@ -43,9 +43,9 @@ const isValidRtv = (value) =>
   numericRe.test(value);
 
 const VersionComboInputContainer = styled.div({
-  alignItems: "center",
+  alignItems: 'center',
   flex: 1,
-  display: "flex",
+  display: 'flex',
 });
 
 const VersionSelect = styled(Form.Select)({
@@ -54,24 +54,24 @@ const VersionSelect = styled(Form.Select)({
 });
 
 const VersionInput = styled(Form.Input)({
-  fontFamily: "Menlo, Consolas, monospace",
+  fontFamily: 'Menlo, Consolas, monospace',
   maxWidth: 180,
 });
 
-function fetchChannelRtvs(): Promise<{ [label: string]: string | undefined }> {
-  return fetch("https://cdn.ampproject.org/rtv/metadata")
+function fetchChannelRtvs(): Promise<{[label: string]: string | undefined}> {
+  return fetch('https://cdn.ampproject.org/rtv/metadata')
     .then((r) => r.json())
-    .then(({ ampRuntimeVersion, ltsRuntimeVersion, diversions }) => ({
+    .then(({ampRuntimeVersion, ltsRuntimeVersion, diversions}) => ({
       LTS: ltsRuntimeVersion,
       stable: ampRuntimeVersion,
-      control: largestWithPrefix("02", diversions),
-      beta: largestWithPrefix("03", diversions),
-      experimental: largestWithPrefix("00", diversions),
-      nightly: largestWithPrefix("04", diversions),
+      control: largestWithPrefix('02', diversions),
+      beta: largestWithPrefix('03', diversions),
+      experimental: largestWithPrefix('00', diversions),
+      nightly: largestWithPrefix('04', diversions),
     }));
 }
 
-export const VersionComboInput = ({ onChange, defaultValue, ...rest }) => {
+export const VersionComboInput = ({onChange, defaultValue, ...rest}) => {
   const [channelRtvs, setChannelRtvs] = useState<{
     [label: string]: string | undefined;
   }>({});
@@ -88,7 +88,7 @@ export const VersionComboInput = ({ onChange, defaultValue, ...rest }) => {
             {label}
           </option>
         ) : (
-          ""
+          ''
         )
       ),
     [channelRtvs]
@@ -97,7 +97,7 @@ export const VersionComboInput = ({ onChange, defaultValue, ...rest }) => {
   const updateValue = useCallback(
     (value) => {
       if (isValidRtv(value)) {
-        onChange({ currentTarget: { value } });
+        onChange({currentTarget: {value}});
       }
       if (inputRef.current) {
         inputRef.current.value = value;
@@ -105,7 +105,7 @@ export const VersionComboInput = ({ onChange, defaultValue, ...rest }) => {
       if (selectRef.current) {
         selectRef.current.value = valueExistsInDict(channelRtvs, value)
           ? value
-          : "";
+          : '';
       }
       setValue(value);
     },
@@ -126,7 +126,6 @@ export const VersionComboInput = ({ onChange, defaultValue, ...rest }) => {
           updateValue(e.target.value);
           inputRef.current?.focus();
         }}
-
         // TODO(alanorozco): TS is complaining without these props
         translate={null}
         onAuxClick={null}
@@ -143,14 +142,13 @@ export const VersionComboInput = ({ onChange, defaultValue, ...rest }) => {
         onChange={(e) => {
           updateValue(e.currentTarget.value);
         }}
-
         // TODO(alanorozco): TS is complaining without these props
         translate={null}
         onAuxClick={null}
         onAuxClickCapture={null}
       />
       {value.length === 0 && (
-        <div style={{ marginLeft: 6 }}>
+        <div style={{marginLeft: 6}}>
           <a href="https://cdn.ampproject.org/experiments.html" target="_blank">
             set opt-in
           </a>

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { makeDecorator } from "@storybook/addons";
+import {makeDecorator} from '@storybook/addons';
 
-import { ParameterName } from "./addon";
-import PreactDecorator from "./register/components/PreactDecorator";
+import {ParameterName} from './addon';
+import PreactDecorator from './register/components/PreactDecorator';
 
 export const withAmp = makeDecorator({
-  name: "withAmp",
+  name: 'withAmp',
   parameterName: ParameterName,
   skipIfNoParametersOrOptions: false,
   wrapper: PreactDecorator, // TODO: Implement React and Vue.js deocrators
