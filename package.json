@@ -58,5 +58,14 @@
   },
   "publishConfig": {
     "tag": "latest"
+  },
+  "keywords": [
+    "storybook-addon",
+    "code",
+    "popular"
+  ],
+  "storybook": {
+    "icon": "https://pbs.twimg.com/profile_images/1226932750596182016/lpoN_WD6_400x400.jpg",
+    "displayName": "AMP"
   }
 }
