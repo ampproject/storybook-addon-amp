@@ -3,14 +3,12 @@ import minimist from 'minimist';
 
 const argv = minimist(process.argv.slice(2));
 
-const bundleNodeModules = new Set(['preact', 'preact-render-to-string']);
-
 const externalResolverPlugin = {
   name: 'external-resolver',
   async setup(build) {
-    build.onResolve({filter: /.*/}, (args) => {
-      if (!args.path.startsWith('.') && !bundleNodeModules.has(args.path)) {
-        return {external: true, path: args.path};
+    build.onResolve({filter: /.*/}, ({path}) => {
+      if (!path.startsWith('.')) {
+        return {external: true, path};
       }
     });
   },
