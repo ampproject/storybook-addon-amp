@@ -40,8 +40,8 @@ Point to a local copy on `build-system/tasks/storybook/package.json`. The follow
 
 ```diff
   "devDependencies" {
--   "@ampproject/storybook-addon-amp": "1.1.1",
-+   "@ampproject/storybook-addon-amp": "file:../../../../storybook-addon-amp",
+-   "@ampproject/storybook-addon": "1.1.1",
++   "@ampproject/storybook-addon": "file:../../../../../storybook-addon-amp",
   }
 ```
 
