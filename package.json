@@ -32,7 +32,7 @@
     "@storybook/core-events": "6.4.19",
     "@storybook/preact": "6.4.19",
     "@storybook/theming": "6.4.19",
-    "@types/react": "17.0.39",
+    "@types/react": "17.0.52",
     "@types/webpack-env": "1.16.3",
     "babel-loader": "8.2.3",
     "core-js": "3.21.0",
