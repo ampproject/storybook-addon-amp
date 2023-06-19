@@ -37,7 +37,7 @@
     "babel-loader": "8.2.3",
     "core-js": "3.21.0",
     "esbuild": "0.14.21",
-    "minimist": "1.2.5",
+    "minimist": "1.2.8",
     "react": "17.0.2"
   },
   "scripts": {
