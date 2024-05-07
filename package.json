@@ -33,7 +33,7 @@
     "@storybook/preact": "6.4.19",
     "@storybook/theming": "6.4.19",
     "@types/react": "17.0.39",
-    "@types/webpack-env": "1.16.3",
+    "@types/webpack-env": "1.18.5",
     "babel-loader": "8.2.3",
     "core-js": "3.21.0",
     "esbuild": "0.14.21",
