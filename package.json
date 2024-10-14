@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@storybook/client-api": "6.4.19",
-    "preact": "10.6.5",
+    "preact": "10.24.3",
     "preact-render-to-string": "5.1.19",
     "react-dom": "17.0.2"
   },
