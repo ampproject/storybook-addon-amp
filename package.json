@@ -21,9 +21,9 @@
     "react": "^17.0.2"
   },
   "devDependencies": {
-    "@babel/core": "7.17.2",
-    "@babel/preset-react": "7.16.7",
-    "@babel/runtime-corejs3": "7.17.2",
+    "@babel/core": "7.25.9",
+    "@babel/preset-react": "7.25.9",
+    "@babel/runtime-corejs3": "7.25.9",
     "@storybook/addon-actions": "6.4.19",
     "@storybook/addon-knobs": "6.4.0",
     "@storybook/addon-links": "6.4.19",
