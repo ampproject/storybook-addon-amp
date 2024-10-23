@@ -18,7 +18,7 @@
     "@storybook/addons": "^6.4.18",
     "@storybook/components": "^6.4.18",
     "@storybook/theming": "^6.4.18",
-    "react": "^17.0.2"
+    "react": "^17.0.2 || ^18.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.17.2",
@@ -32,13 +32,13 @@
     "@storybook/core-events": "6.4.19",
     "@storybook/preact": "6.4.19",
     "@storybook/theming": "6.4.19",
-    "@types/react": "17.0.39",
+    "@types/react": "18.3.12",
     "@types/webpack-env": "1.16.3",
     "babel-loader": "8.2.3",
     "core-js": "3.21.0",
     "esbuild": "0.14.21",
     "minimist": "1.2.5",
-    "react": "17.0.2"
+    "react": "18.3.1"
   },
   "scripts": {
     "dev": "tsc --watch --preserveWatchOutput",
@@ -54,7 +54,7 @@
     "@storybook/client-api": "6.4.19",
     "preact": "10.6.5",
     "preact-render-to-string": "5.1.19",
-    "react-dom": "17.0.2"
+    "react-dom": "18.3.1"
   },
   "publishConfig": {
     "tag": "latest"
